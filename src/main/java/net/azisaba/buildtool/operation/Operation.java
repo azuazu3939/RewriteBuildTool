@@ -20,6 +20,8 @@ public interface Operation {
 
     void subtract();
 
+    boolean hasItem();
+
     enum OperationType {
         LONG_LENGTH_PLACE,
         SQUARE_PLACE,

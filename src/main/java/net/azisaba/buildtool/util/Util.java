@@ -51,9 +51,9 @@ public class Util {
         operations.put(slot, type);
     }
 
-    public static @NotNull Set<BlockFace> getFaces(BlockFace face) {
+    public static @NotNull List<BlockFace> getFaces(BlockFace face) {
 
-        Set<BlockFace> result = new HashSet<>();
+        List<BlockFace> result = new ArrayList<>();
         if (faceList.contains(face)) {
             for (BlockFace f : faceList) {
                 if (f.equals(face) || f.equals(face.getOppositeFace())) continue;

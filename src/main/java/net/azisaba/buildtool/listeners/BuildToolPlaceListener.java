@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static net.azisaba.buildtool.util.Util.getOperationType;
+import static org.bukkit.Bukkit.getLogger;
 
 public class BuildToolPlaceListener implements Listener {
 
@@ -66,6 +67,7 @@ public class BuildToolPlaceListener implements Listener {
         } else if (type == Operation.OperationType.SQUARE_BLOCK_PLACE) {
             new SquareBlockPlace(clicked, face, length, i, p).place();
         }
+        getLogger().info(p.getName() + "は、BuildToolを使用した。");
         cooldownSet.add(p.getUniqueId());
         BuildTool.inst().runAsyncDelayed(()-> cooldownSet.remove(p.getUniqueId()), 10);
     }

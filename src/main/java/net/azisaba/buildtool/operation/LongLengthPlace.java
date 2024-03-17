@@ -1,6 +1,5 @@
 package net.azisaba.buildtool.operation;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -59,6 +58,7 @@ public class LongLengthPlace implements Operation {
 
         for (ItemStack item : p.getInventory().getContents()) {
             if (item == null) continue;
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) continue;
             if (item.getType().equals(b.getType())) {
                 item.setAmount(item.getAmount() - 1);
                 return;
@@ -67,11 +67,21 @@ public class LongLengthPlace implements Operation {
     }
 
     @Override
+    public boolean hasItem() {
+        for (ItemStack item : p.getInventory().getContents()) {
+            if (item == null) continue;
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) continue;
+            if (item.getType().equals(b.getType())) return true;
+        }
+        return false;
+    }
+
+    @Override
     public void place() {
 
-        Bukkit.broadcastMessage(getBlock().toString() + face);
         for (int i = 0; i < getRepeat(); i++) {
 
+            if (!(hasItem())) return;
             Block get = getBlock().getRelative(face);
             if (get.getType() != Material.AIR) return; // if block is air, return もしかしたら、これもオプションにするかも
 

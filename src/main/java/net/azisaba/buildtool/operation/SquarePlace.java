@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class SquarePlace implements Operation {
 
@@ -62,6 +61,7 @@ public class SquarePlace implements Operation {
     public void subtract() {
         for (ItemStack item : p.getInventory().getContents()) {
             if (item == null) continue;
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) continue;
             if (item.getType().equals(b.getType())) {
                 item.setAmount(item.getAmount() - 1);
                 return;
@@ -70,8 +70,18 @@ public class SquarePlace implements Operation {
     }
 
     @Override
+    public boolean hasItem() {
+        for (ItemStack item : p.getInventory().getContents()) {
+            if (item == null) continue;
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) continue;
+            if (item.getType().equals(b.getType())) return true;
+        }
+        return false;
+    }
+
+    @Override
     public void place() {
-        Set<BlockFace> faces = Util.getFaces(face);
+        List<BlockFace> faces = Util.getFaces(face);
         Block get = getBlock().getRelative(face);
         List<Block> loop = new ArrayList<>();
 
@@ -101,6 +111,8 @@ public class SquarePlace implements Operation {
             loop.add(get);
             return remaining;
         }
+
+        if (!(hasItem())) return remaining;
 
         state.setBlockData(get.getType().createBlockData());
         BlockPlaceEvent event = new BlockPlaceEvent(get, state, getBlock(), p.getInventory().getItemInMainHand(), p, true, EquipmentSlot.HAND);

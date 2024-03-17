@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class SquareBlockPlace implements Operation {
@@ -27,16 +28,7 @@ public class SquareBlockPlace implements Operation {
         this.face = face;
         this.i = i;
         this.p = p;
-        this.l = Math.min(i, getLimit(l));
-    }
-
-    private int getLimit(int l) {
-
-        if (l == 1) return 1;
-        if (l == 2) return 9;
-        if (l == 3) return 25;
-        if (l == 4) return 49;
-        else return 1;
+        this.l = l;
     }
 
     @Override
@@ -68,6 +60,7 @@ public class SquareBlockPlace implements Operation {
     public void subtract() {
         for (ItemStack item : p.getInventory().getContents()) {
             if (item == null) continue;
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) continue;
             if (item.getType().equals(b.getType())) {
                 item.setAmount(item.getAmount() - 1);
                 return;
@@ -78,28 +71,49 @@ public class SquareBlockPlace implements Operation {
 
     @Override
     public void place() {
-        Set<BlockFace> faces = Util.getFaces(face);
+        List<BlockFace> faces = Util.getFaces(face);
         Block get = getBlock().getRelative(face);
 
         if (l >= 1) place(get);
-        if (l >= 2) place(get, faces, 2);
-        if (l >= 3) place(get, faces, 3);
-        if (l >= 4) place(get, faces, 4);
+        if (l >= 2) stackPlace(get, faces, 2);
+        if (l >= 3) stackPlace(get, faces, 3);
+        if (l >= 4) stackPlace(get, faces, 4);
 
     }
 
-    private void place(Block get, @NotNull Set<BlockFace> faces, int l) {
+    private void stackPlace(Block get, @NotNull List<BlockFace> faces, int l) {
+
         for (BlockFace face : faces) {
-            get = getBlockLoop(get, face, l);
-            place(get);
+            Block get2 = getBlockLoop(get, face, l);
+            place(get2);
             for (BlockFace face2 : getRightLeftFaces(face)) {
-                place(get.getRelative(face2));
+                loopPlace(get2, face2, l);
             }
         }
     }
 
+    private void loopPlace(Block get, BlockFace face, int l) {
+        for (int i = 1; i < l; i++) {
+            Block get2 = get.getRelative(face);
+            place(get2);
+            get = get2;
+        }
+    }
+
+    @Override
+    public boolean hasItem() {
+        for (ItemStack item : p.getInventory().getContents()) {
+            if (item == null) continue;
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) continue;
+            if (item.getType().equals(b.getType())) return true;
+        }
+        return false;
+    }
+
+
     private void place(@NotNull Block get) {
 
+        if (!(hasItem())) return;
         if (get.getType() == Material.AIR) {
             BlockState state = get.getState();
             state.setBlockData(get.getType().createBlockData());
@@ -135,7 +149,6 @@ public class SquareBlockPlace implements Operation {
                 set.add(BlockFace.NORTH);
                 set.add(BlockFace.SOUTH);
             }
-            return set;
         }
         else {
             if (booleanFace) {
@@ -145,8 +158,8 @@ public class SquareBlockPlace implements Operation {
                 set.add(BlockFace.NORTH);
                 set.add(BlockFace.SOUTH);
             }
-            return set;
         }
+        return set;
     }
 
     private Block getBlockLoop(Block b, BlockFace branchFace, int l) {
