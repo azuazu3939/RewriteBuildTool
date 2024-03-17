@@ -12,7 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Build extends ItemStack implements BuildItem {
+public class Build {
 
     private static final List<String> lore = new ArrayList<>();
     static {
@@ -21,15 +21,9 @@ public class Build extends ItemStack implements BuildItem {
         lore.add(Util.getColor("&fシフト左で設定を開きます。"));
     }
 
-    private final Material material;
-    public Build(Material material) {
-        super(material);
-        this.material = material;
-    }
+    public ItemStack build(Material material) {
 
-    public Build build() {
-
-        Build item = new Build(material);
+        ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
 
         meta.getPersistentDataContainer().set(NamespacedKey.minecraft("admin_item"), PersistentDataType.INTEGER, 1);

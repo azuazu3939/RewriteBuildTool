@@ -72,9 +72,7 @@ public class SquarePlace implements Operation {
     @Override
     public void place() {
         Set<BlockFace> faces = Util.getFaces(face);
-
-        BlockFace willPlace = getFacing().getOppositeFace();
-        Block get = getBlock().getRelative(willPlace);
+        Block get = getBlock().getRelative(face);
         List<Block> loop = new ArrayList<>();
 
         int remaining = place(get, getRepeat(), loop);
@@ -98,18 +96,17 @@ public class SquarePlace implements Operation {
         BlockState state = get.getState();
 
         if (state.getType() != Material.AIR) {
+            remaining--;
             return remaining;
         }
 
         state.setBlockData(get.getType().createBlockData());
         BlockPlaceEvent event = new BlockPlaceEvent(get, state, getBlock(), p.getInventory().getItemInMainHand(), p, true, EquipmentSlot.HAND);
 
-        if (!event.callEvent()) {
-            state.update(false);
-            return remaining;
-        }
+        if (!event.callEvent()) return remaining;
+
         subtract();
-        state.update(true);
+        get.setType(getBlock().getType());
         setBlock(get);
         loop.add(get);
 

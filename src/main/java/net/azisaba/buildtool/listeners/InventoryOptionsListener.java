@@ -2,6 +2,7 @@ package net.azisaba.buildtool.listeners;
 
 import net.azisaba.buildtool.util.Util;
 import org.bukkit.Bukkit;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -10,6 +11,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -35,10 +37,11 @@ public class InventoryOptionsListener implements Listener, InventoryHolder {
         ItemStack clicked = e.getCurrentItem();
         if (clicked == null) return;
 
-        setAmount(clicked, e, uuid);
+        setAmount(clicked, e);
 
         optionsMap.put(uuid, slot);
         optionsCountMap.put(uuid, clicked.getAmount());
+        enchant(inv, clicked);
     }
 
     @EventHandler
@@ -69,22 +72,34 @@ public class InventoryOptionsListener implements Listener, InventoryHolder {
         return getInventoryMap.get(uuid);
     }
 
-    private void setAmount(ItemStack clicked, @NotNull InventoryClickEvent e, UUID uuid) {
+    private void setAmount(ItemStack clicked, @NotNull InventoryClickEvent e) {
         int edit = 1;
         if (e.isShiftClick()) edit = 5;
         if (e.isRightClick()) edit = -edit;
 
-        if (optionsCountMap.containsKey(uuid)) {
-            int check = optionsCountMap.get(uuid) + edit;
-            if (check < 1) check = 64 + check;
-            if (check > 64) check-= 64;
+        int check = clicked.getAmount() + edit;
+        if (check < 1) check = 64 + check;
+        if (check > 64) check -= 64;
 
-            clicked.setAmount(check);
-        }
+        clicked.setAmount(check);
     }
 
     public static int getSlot(UUID uuid) {
         if (!optionsMap.containsKey(uuid)) return 0;
         return optionsMap.get(uuid);
+    }
+
+    private void enchant(@NotNull Inventory inv, ItemStack item) {
+
+        for (ItemStack stack : inv.getContents()) {
+            if (stack == null || !stack.hasItemMeta()) continue;
+
+            ItemMeta meta = stack.getItemMeta();
+            if (!meta.hasEnchants()) continue;
+            for (Enchantment enchantment : meta.getEnchants().keySet()) {
+                stack.removeEnchantment(enchantment);
+            }
+        }
+        item.addUnsafeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 1);
     }
 }

@@ -1,6 +1,6 @@
 package net.azisaba.buildtool.listeners;
 
-import net.azisaba.buildtool.Item.BuildItem;
+import net.azisaba.buildtool.util.Util;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +21,7 @@ public class OpenListener implements Listener {
         if (!p.isSneaking()) return;
 
         ItemStack item = e.getItem();
-        if (!(item instanceof BuildItem)) return;
+        if (!(Util.isBuildItem(item))) return;
 
         p.closeInventory();
         p.openInventory(InventoryOptionsListener.getBuildInventory(p.getUniqueId()));

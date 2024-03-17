@@ -1,12 +1,15 @@
 package net.azisaba.buildtool.util;
 
+import net.azisaba.buildtool.BuildTool;
 import net.azisaba.buildtool.operation.Operation;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -66,5 +69,18 @@ public class Util {
 
     public static Operation.OperationType getOperationType(int slot) {
         return operations.get(slot);
+    }
+
+    public static boolean isBuildItem(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) return false;
+        return item.getItemMeta().getPersistentDataContainer().has(NamespacedKey.minecraft("admin_item"), PersistentDataType.INTEGER);
+    }
+
+    public static boolean isWorld(String name) {
+        for (String worldName : BuildTool.inst().getConfig().getStringList("enableWorlds")) {
+            if (worldName == null) continue;
+            if (worldName.equalsIgnoreCase(name)) return true;
+        }
+        return false;
     }
 }

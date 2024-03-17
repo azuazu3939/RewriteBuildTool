@@ -4,6 +4,7 @@ import net.azisaba.buildtool.commands.GiveBuildToolCommand;
 import net.azisaba.buildtool.listeners.BuildToolPlaceListener;
 import net.azisaba.buildtool.listeners.InventoryOptionsListener;
 import net.azisaba.buildtool.listeners.OpenListener;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,6 +17,7 @@ public final class BuildTool extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        saveDefaultConfig();
 
         //Listeners
         registerListeners();
@@ -40,5 +42,9 @@ public final class BuildTool extends JavaPlugin {
 
     private void registerCommands() {
         Objects.requireNonNull(getCommand("giveBuildTool")).setExecutor(new GiveBuildToolCommand());
+    }
+
+    public void runAsyncDelayed(Runnable runnable, long delay) {
+        Bukkit.getScheduler().runTaskLaterAsynchronously(this, runnable, delay);
     }
 }

@@ -31,7 +31,7 @@ repositories {
 dependencies {
     compileOnly("com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.6.0")
-    compileOnly("org.jetbrains:annotations:13.0")
+    implementation("org.jetbrains:annotations:13.0")
 }
 
 group = "net.azisaba"

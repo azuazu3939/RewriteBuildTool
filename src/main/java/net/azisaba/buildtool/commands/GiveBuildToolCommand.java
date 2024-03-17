@@ -16,7 +16,7 @@ public class GiveBuildToolCommand implements CommandExecutor {
         Player player = (Player) commandSender;
         if (!player.hasPermission("BuildTool.command.giveBuildTool")) return false;
 
-        player.getInventory().addItem(new Build(Material.BLAZE_ROD).build());
+        player.getInventory().addItem(new Build().build(Material.BLAZE_ROD));
         return true;
     }
 }

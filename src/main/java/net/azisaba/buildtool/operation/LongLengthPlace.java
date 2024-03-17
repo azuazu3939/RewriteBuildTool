@@ -1,5 +1,6 @@
 package net.azisaba.buildtool.operation;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -67,22 +68,20 @@ public class LongLengthPlace implements Operation {
 
     @Override
     public void place() {
+
+        Bukkit.broadcastMessage(getBlock().toString() + face);
         for (int i = 0; i < getRepeat(); i++) {
 
-            BlockFace willPlace = getFacing().getOppositeFace();
-            Block get = getBlock().getRelative(willPlace);
-            if (!get.getType().equals(Material.AIR)) return; // if block is air, return もしかしたら、これもオプションにするかも
+            Block get = getBlock().getRelative(face);
+            if (get.getType() != Material.AIR) return; // if block is air, return もしかしたら、これもオプションにするかも
 
             BlockState state = get.getState();
-            state.setBlockData(get.getType().createBlockData());
             BlockPlaceEvent event = new BlockPlaceEvent(get, state, getBlock(), p.getInventory().getItemInMainHand(), p, true, EquipmentSlot.HAND);
 
-            if (!event.callEvent()) {
-                state.update(false);
-                return;
-            }
+            if (!event.callEvent()) return;
+
             subtract();
-            state.update(true);
+            get.setType(getBlock().getType());
             setBlock(get);
         }
     }
