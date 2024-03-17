@@ -37,7 +37,7 @@ public class InventoryOptionsListener implements Listener, InventoryHolder {
         ItemStack clicked = e.getCurrentItem();
         if (clicked == null) return;
 
-        setAmount(clicked, e);
+        setAmount(clicked, e, slot);
 
         optionsMap.put(uuid, slot);
         optionsCountMap.put(uuid, clicked.getAmount());
@@ -72,16 +72,26 @@ public class InventoryOptionsListener implements Listener, InventoryHolder {
         return getInventoryMap.get(uuid);
     }
 
-    private void setAmount(ItemStack clicked, @NotNull InventoryClickEvent e) {
+    private void setAmount(ItemStack clicked, @NotNull InventoryClickEvent e, int slot) {
+
         int edit = 1;
-        if (e.isShiftClick()) edit = 5;
         if (e.isRightClick()) edit = -edit;
 
-        int check = clicked.getAmount() + edit;
-        if (check < 1) check = 64 + check;
-        if (check > 64) check -= 64;
+        if (slot != 2) {
+            if (e.isShiftClick()) edit*= 5;
 
-        clicked.setAmount(check);
+            int check = clicked.getAmount() + edit;
+            if (check < 1) check = 64 + check;
+            if (check > 64) check -= 64;
+            clicked.setAmount(check);
+
+        } else {
+
+            int check = clicked.getAmount() + edit;
+            if (check < 1) check = 4;
+            if (check > 4) check -= 4;
+            clicked.setAmount(check);
+        }
     }
 
     public static int getSlot(UUID uuid) {

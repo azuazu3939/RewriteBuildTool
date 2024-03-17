@@ -32,6 +32,7 @@ public class Util {
     public static Inventory setOptions(Inventory inv) {
         registerOperationAndPlace(inv, 0, createOption(getColor("&aライン型設置"), Material.OAK_LOG), Operation.OperationType.LONG_LENGTH_PLACE);
         registerOperationAndPlace(inv, 1, createOption(getColor("&a平面型設置"), Material.SPRUCE_LOG), Operation.OperationType.SQUARE_PLACE);
+        registerOperationAndPlace(inv, 2, createOption(getColor("&a正方形設置"), Material.STONE), Operation.OperationType.SQUARE_BLOCK_PLACE);
         return inv;
     }
 

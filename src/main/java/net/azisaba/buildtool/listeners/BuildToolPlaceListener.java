@@ -3,6 +3,7 @@ package net.azisaba.buildtool.listeners;
 import net.azisaba.buildtool.BuildTool;
 import net.azisaba.buildtool.operation.LongLengthPlace;
 import net.azisaba.buildtool.operation.Operation;
+import net.azisaba.buildtool.operation.SquareBlockPlace;
 import net.azisaba.buildtool.operation.SquarePlace;
 import net.azisaba.buildtool.util.Util;
 import org.bukkit.block.Block;
@@ -61,6 +62,9 @@ public class BuildToolPlaceListener implements Listener {
 
         } else if (type == Operation.OperationType.SQUARE_PLACE) {
             new SquarePlace(clicked, face, length, i, p).place();
+
+        } else if (type == Operation.OperationType.SQUARE_BLOCK_PLACE) {
+            new SquareBlockPlace(clicked, face, length, i, p).place();
         }
         cooldownSet.add(p.getUniqueId());
         BuildTool.inst().runAsyncDelayed(()-> cooldownSet.remove(p.getUniqueId()), 10);

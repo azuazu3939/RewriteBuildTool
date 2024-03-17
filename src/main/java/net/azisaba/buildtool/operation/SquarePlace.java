@@ -83,7 +83,7 @@ public class SquarePlace implements Operation {
                 for (BlockFace face : faces) {
                     get = block.getRelative(face);
                     remaining = place(get, remaining, loop2);
-                    if (remaining == 0) return;
+                    if (remaining <= 0) return;
                 }
             }
             loop.clear();
@@ -97,6 +97,8 @@ public class SquarePlace implements Operation {
 
         if (state.getType() != Material.AIR) {
             remaining--;
+            setBlock(get);
+            loop.add(get);
             return remaining;
         }
 

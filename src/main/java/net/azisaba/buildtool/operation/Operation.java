@@ -22,7 +22,8 @@ public interface Operation {
 
     enum OperationType {
         LONG_LENGTH_PLACE,
-        SQUARE_PLACE;
+        SQUARE_PLACE,
+        SQUARE_BLOCK_PLACE;
 
         @SuppressWarnings("unused")
         public OperationType getType(@NotNull String name) {
